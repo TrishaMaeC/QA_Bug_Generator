@@ -36,7 +36,7 @@ textarea{min-height:76px;resize:vertical}
 .chatbar textarea{min-height:44px;height:44px}
 #out{margin-top:16px;display:none}
 #out pre{white-space:pre-wrap;word-break:break-word;margin:0;font:13.5px/1.55 ui-monospace,Consolas,monospace;overflow-x:auto}
-.outhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:600}
+.outhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;font-weight:600}
 .note{color:var(--mute);font-size:13px;margin-top:10px}
 body{background:radial-gradient(900px 420px at 88% -8%,rgba(255,143,194,.38),transparent 62%),var(--bg)}
 .brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
@@ -72,6 +72,14 @@ body{background:radial-gradient(900px 420px at 88% -8%,color-mix(in srgb,var(--a
 .sw button{width:22px;height:22px;border-radius:50%;border:2px solid var(--card);cursor:pointer;padding:0;box-shadow:0 0 0 1px var(--line)}
 .sw button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
 .sw input{width:26px;height:26px;padding:0;border:0;background:none;cursor:pointer;border-radius:50%}
+.env-fields{margin-top:18px;padding:12px;border:1px solid var(--line);border-radius:10px}
+.env-fields summary{font-weight:700;cursor:pointer;color:var(--acc);padding:4px 0}
+.env-fields label{margin-top:12px}
+.env-fields input{margin-top:2px}
+.output-section{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px;min-width:0}
+.output-section .outhead span{min-width:0;overflow-wrap:anywhere}
+.output-section pre{white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;font:13.5px/1.65 ui-monospace,Consolas,monospace;margin:0}
+.copy-part{flex-shrink:0;padding:6px 10px;font-size:12px}
 </style>
 </head>
 <body>
@@ -116,6 +124,24 @@ body{background:radial-gradient(900px 420px at 88% -8%,color-mix(in srgb,var(--a
     <textarea id="steps" placeholder="e.g. Field type: Phone, Min Length: 7"></textarea>
     <label for="ev">Evidence notes (optional)</label>
     <input id="ev" placeholder="e.g. 404 in console, error message text">
+
+    <details class="env-fields">
+      <summary>Environment Details (Optional)</summary>
+      <label for="envApp">Application</label>
+      <input id="envApp" placeholder="e.g. APNTalk">
+      <label for="envUrl">URL</label>
+      <input id="envUrl" type="url" placeholder="e.g. https://example.com">
+      <label for="envUsername">Username</label>
+      <input id="envUsername" autocomplete="off" placeholder="Enter test username">
+      <label for="envPassword">Password (optional)</label>
+      <input id="envPassword" type="password" autocomplete="new-password" placeholder="Enter test password">
+      <label for="envBrowser">Browser</label>
+      <input id="envBrowser" placeholder="e.g. Google Chrome">
+      <label for="envDateTime">Date and Time</label>
+      <input id="envDateTime" placeholder="e.g. 09/07/2026, 10:34 AM">
+      <p class="note">Environment details are added locally. The password is never sent to the AI.</p>
+    </details>
+
     <label for="shots">Screenshots (optional, up to 4)</label>
     <input id="shots" type="file" accept="image/*" multiple>
     <div class="thumbs" id="thumbs"></div>
@@ -136,27 +162,50 @@ body{background:radial-gradient(900px 420px at 88% -8%,color-mix(in srgb,var(--a
   </section>
 
   <section id="out" class="card">
-    <div class="outhead"><span>Report</span><button class="btn ghost" id="copy">Copy</button></div>
-    <pre id="outtxt"></pre>
+    <h2 style="margin:0 0 14px;font-size:19px">Generated Report</h2>
+    <div class="output-section">
+      <div class="outhead"><span>Title</span><button class="btn ghost copy-part" data-copy="titleOut">Copy Title</button></div>
+      <pre id="titleOut"></pre>
+    </div>
+    <div class="output-section">
+      <div class="outhead"><span>Description + Steps to Reproduce</span><button class="btn ghost copy-part" data-copy="descriptionOut">Copy Section</button></div>
+      <pre id="descriptionOut"></pre>
+    </div>
+    <div class="output-section">
+      <div class="outhead"><span>Environment</span><button class="btn ghost copy-part" data-copy="environmentOut">Copy Environment</button></div>
+      <pre id="environmentOut"></pre>
+    </div>
+    <div class="output-section">
+      <div class="outhead"><span>Acceptance Criteria</span><button class="btn ghost copy-part" data-copy="criteriaOut">Copy Criteria</button></div>
+      <pre id="criteriaOut"></pre>
+    </div>
+    <p class="note" id="copyNote" aria-live="polite"></p>
   </section>
-  <p id="warn" class="note hidden">This page needs Claude access to generate reports. Open it from claude.ai while signed in.</p>
+  <p id="warn" class="note hidden">The report generator is currently unavailable. Please try again later.</p>
 </main>
 
 <script>
 const SYS = `You write QA reports for a QA tester. Follow these rules exactly.
-- Write reports in English, in simple and easy-to-understand wording. Never use first person.
-- First decide if it is a Bug or an Improvement. If unsure, say which one in a single line at the top.
-- Do not invent details. Use "–" for unknown Data. Put assumptions in one short line at the end.
-BUG format:
-Title: Module → Page → Feature — short problem
-Description: 2-4 sentences.
-Steps to Reproduce: a markdown table with columns Action | Data | Expected Result | Actual Result. Include earlier setup steps as Passed, and only ONE Failed row at the end.
-Acceptance Criteria: 1 to 2 short numbered bullets.
-IMPROVEMENT format:
-Title: Module → Page → Feature — short improvement
-Description with three parts: Current State (bullets), Proposed Improvements (bullets), Expected Benefits (bullets).
-Acceptance Criteria: 1 to 2 short numbered bullets.
-Do not add Impact or Recommendation sections.`;
+Write in English, using simple and easy-to-understand wording. Never use first person.
+Do not invent details. Use "–" for unknown information.
+First decide if it is a Bug or an Improvement. If unsure, state the type briefly in the description.
+
+Return the report using these exact section markers in this order:
+[[TITLE]]
+Write only the title text, without "Title:".
+For bugs: Module → Page → Feature — short problem.
+For improvements: Module → Page → Feature — short improvement.
+
+[[DESCRIPTION_STEPS]]
+For bugs, write a concise 2–4 sentence description first, then a markdown table with columns Action | Data | Expected Result | Actual Result. Include setup steps as Passed and only ONE Failed row at the end. Do not include the labels "Description" or "Steps to Reproduce".
+For improvements, include Current State, Proposed Improvements, and Expected Benefits as concise bullets. Do not add the labels "Description" or "Steps to Reproduce".
+
+[[ACCEPTANCE_CRITERIA]]
+Provide 1–2 short numbered acceptance criteria.
+
+Do not add Impact or Recommendation sections.
+Do not include environment details in your response; the application will build the Environment section separately.
+Do not omit section markers or add extra text outside the markers.`;
 
 const $ = id => document.getElementById(id);
 
@@ -192,6 +241,7 @@ $("custom").oninput = e => setAccent(e.target.value, "color-mix(in srgb," + e.ta
 let savedAcc = null;
 try { savedAcc = JSON.parse(localStorage.getItem("tqa-accent")); } catch (e) {}
 if (Array.isArray(savedAcc) && savedAcc.length === 2) setAccent(savedAcc[0], savedAcc[1]); else setAccent("#6d4aff", "#a78bfa");
+
 let sample = null, busy = false, msgs = [], shots = [];
 
 function toB64(f){
@@ -202,14 +252,20 @@ function toB64(f){
     r.readAsDataURL(f);
   });
 }
+
 sample = async function(input, opts = {}){
   const messages = typeof input === "string" ? [{ role:"user", content: input }] : input;
   const images = await Promise.all((opts.images || []).map(toB64));
-  const r = await fetch("/api/generate", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ messages, images }) });
-  if (!r.ok) throw new Error("request failed");
-  const { text } = await r.json();
-  if (opts.onText) opts.onText({ text });
-  return { text };
+  const r = await fetch("/api/generate", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ messages, images })
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || "Request failed");
+  const result = { text: data.text || "" };
+  if (opts.onText) opts.onText(result);
+  return result;
 };
 sample.limits = async () => ({ images: true });
 
@@ -224,43 +280,123 @@ $("tab-form").onclick = () => show("form");
 $("tab-chat").onclick = () => show("chat");
 
 function errText(e){
-  if (e && e.code === "not_granted") return "Access to Claude was not granted for this page.";
-  if (e && e.code === "rate_limited") return "Too many requests. Please wait a moment and try again.";
-  return "Something went wrong. Please try again.";
+  return e?.message && e.message !== "Request failed"
+    ? "Generation failed: " + e.message
+    : "Something went wrong. Please try again.";
+}
+
+function parseReport(text) {
+  const sections = { titleOut:"", descriptionOut:"", criteriaOut:"" };
+  const markers = [
+    ["[[TITLE]]","titleOut"],
+    ["[[DESCRIPTION_STEPS]]","descriptionOut"],
+    ["[[ACCEPTANCE_CRITERIA]]","criteriaOut"]
+  ];
+  for (let i = 0; i < markers.length; i++) {
+    const [marker, id] = markers[i];
+    const start = text.indexOf(marker);
+    if (start === -1) continue;
+    const contentStart = start + marker.length;
+    const nextPositions = markers.slice(i + 1)
+      .map(([nextMarker]) => text.indexOf(nextMarker, contentStart))
+      .filter(pos => pos !== -1);
+    const end = nextPositions.length ? Math.min(...nextPositions) : text.length;
+    sections[id] = text.slice(contentStart, end).trim();
+  }
+  sections.titleOut = sections.titleOut.replace(/^Title:\s*/i, "");
+  sections.descriptionOut = sections.descriptionOut
+    .replace(/^Description:\s*/i, "")
+    .replace(/^Steps to Reproduce:\s*/gim, "")
+    .trim();
+  return sections;
+}
+
+function buildEnvironment(){
+  const values = [
+    ["Application", $("envApp").value.trim()],
+    ["URL", $("envUrl").value.trim()],
+    ["Username", $("envUsername").value.trim()],
+    ["Password", $("envPassword").value],
+    ["Browser", $("envBrowser").value.trim()],
+    ["Date and Time", $("envDateTime").value.trim()]
+  ];
+  const filled = values.filter(([, value]) => value !== "");
+  if (!filled.length) return "Environment:\n\n–";
+  return "Environment:\n\n" + values.map(([label, value]) =>
+    label + ": " + (value || "–")
+  ).join("\n\n");
+}
+
+function renderReport(text){
+  const sections = parseReport(text);
+  const hasMarkers = text.includes("[[TITLE]]");
+  if (!hasMarkers) {
+    $("titleOut").textContent = "Could not separate the generated sections.";
+    $("descriptionOut").textContent = text.trim() || "–";
+    $("criteriaOut").textContent = "–";
+  } else {
+    $("titleOut").textContent = sections.titleOut || "–";
+    $("descriptionOut").textContent = sections.descriptionOut || "–";
+    $("criteriaOut").textContent = sections.criteriaOut || "–";
+  }
+  // Password is read and inserted locally only; it is never added to the AI prompt.
+  $("environmentOut").textContent = buildEnvironment();
+}
+
+function getEnvironmentForPrompt(){
+  return [
+    "Application: " + ($("envApp").value.trim() || "–"),
+    "URL: " + ($("envUrl").value.trim() || "–"),
+    "Username: " + ($("envUsername").value.trim() || "–"),
+    "Browser: " + ($("envBrowser").value.trim() || "–"),
+    "Date and Time: " + ($("envDateTime").value.trim() || "–")
+  ].join("\n");
 }
 
 $("gen").onclick = async () => {
   if (busy) return;
-  if (!sample) { $("warn").classList.remove("hidden"); return; }
   const what = $("what").value.trim();
   if (!what) { $("what").focus(); return; }
+
   const prompt = SYS + "\n\nWrite the report from these details.\n" +
     "Type: " + $("type").value + "\n" +
     "Where: " + ($("where").value.trim() || "not provided") + "\n" +
     "What happened: " + what + "\n" +
     "Expected: " + ($("exp").value.trim() || "not provided") + "\n" +
     "Steps/data: " + ($("steps").value.trim() || "not provided") + "\n" +
-    "Evidence: " + ($("ev").value.trim() || "not provided") + "\nScreenshots attached: " + shots.length + (shots.length ? " (read visible error messages, labels, and values from them)" : "");
+    "Evidence: " + ($("ev").value.trim() || "not provided") + "\n" +
+    "Environment context (do not repeat it in output):\n" + getEnvironmentForPrompt() +
+    "\nScreenshots attached: " + shots.length +
+    (shots.length ? " (read visible error messages, labels, and values from them)" : "");
+
   busy = true; $("gen").disabled = true; $("gen").textContent = "Generating…";
-  $("out").style.display = "block"; $("outtxt").textContent = "Thinking…";
+  $("out").style.display = "block";
+  $("titleOut").textContent = "Generating…";
+  $("descriptionOut").textContent = "Generating…";
+  $("environmentOut").textContent = buildEnvironment();
+  $("criteriaOut").textContent = "Generating…";
+  $("copyNote").textContent = "";
   try {
-    const opts = { cache:false, onText: ({text}) => { $("outtxt").textContent = text; } };
+    const opts = { cache:false, onText: ({text}) => renderReport(text) };
     $("shotnote").textContent = "";
-    if (shots.length) {
-      let ok = false;
-      try { ok = (await sample.limits()).images; } catch (e) {}
-      if (ok) opts.images = shots;
-      else $("shotnote").textContent = "Screenshots are not supported here, so the report was made from the text only.";
-    }
+    if (shots.length) opts.images = shots;
     const r = await sample(prompt, opts);
-    $("outtxt").textContent = r.text;
-  } catch (e) { $("outtxt").textContent = errText(e); }
-  busy = false; $("gen").disabled = false; $("gen").textContent = "Generate report";
+    renderReport(r.text);
+  } catch (e) {
+    $("titleOut").textContent = "Unable to generate report.";
+    $("descriptionOut").textContent = errText(e);
+    $("environmentOut").textContent = buildEnvironment();
+    $("criteriaOut").textContent = "–";
+  } finally {
+    busy = false; $("gen").disabled = false; $("gen").textContent = "Generate report";
+  }
 };
 
 $("clear").onclick = () => {
-  ["where","what","exp","steps","ev"].forEach(i => $(i).value = "");
-  $("type").value = "auto"; $("out").style.display = "none";
+  ["where","what","exp","steps","ev","envApp","envUrl","envUsername","envPassword","envBrowser","envDateTime"].forEach(i => $(i).value = "");
+  $("type").value = "auto";
+  $("out").style.display = "none";
+  $("shots") .value = "";
   shots = []; renderThumbs(); $("shotnote").textContent = "";
 };
 
@@ -275,9 +411,25 @@ function renderThumbs(){
   });
 }
 $("shots").onchange = e => {
-  for (const f of e.target.files) { if (shots.length < 4 && f.type.startsWith("image/")) shots.push(f); }
+  for (const f of e.target.files) {
+    if (shots.length < 4 && f.type.startsWith("image/")) shots.push(f);
+  }
   e.target.value = ""; renderThumbs();
 };
+
+document.querySelectorAll(".copy-part").forEach(button => {
+  button.onclick = async () => {
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText($(button.dataset.copy).textContent);
+      button.textContent = "Copied!";
+      $("copyNote").textContent = "";
+    } catch (e) {
+      $("copyNote").textContent = "Copy was blocked by the browser. Select the text and copy it manually.";
+    }
+    setTimeout(() => button.textContent = original, 1500);
+  };
+});
 
 function addMsg(role, text){
   const d = document.createElement("div");
@@ -291,31 +443,36 @@ addMsg("assistant", "Hi! Tell me what you found, and where. Add details like wha
 
 $("send").onclick = async () => {
   if (busy) return;
-  if (!sample) { $("warn").classList.remove("hidden"); return; }
   const t = $("msg").value.trim();
   if (!t) return;
   $("msg").value = "";
   addMsg("user", t);
   msgs.push({ role:"user", content:t });
+
   const input = msgs.map((m, i) => i === 0
-    ? { role:"user", content: SYS + "\nIn chat: if key details are missing, ask at most 2 short questions (reply in the user's language). Otherwise write the report.\n\nUser: " + m.content }
+    ? { role:"user", content: SYS + "\nIn chat: if key details are missing, ask at most 2 short questions (reply in the user's language). If enough details are present, return the report using the exact section markers.\n\nUser: " + m.content }
     : m);
+
   const bubble = addMsg("assistant", "Thinking…");
   busy = true; $("send").disabled = true;
   try {
-    const r = await sample(input, { cache:false, onText: ({text}) => { bubble.textContent = text; $("chatlog").scrollTop = $("chatlog").scrollHeight; } });
+    const r = await sample(input, { cache:false });
     bubble.textContent = r.text;
     msgs.push({ role:"assistant", content:r.text });
-  } catch (e) { bubble.textContent = errText(e); msgs.pop(); }
-  busy = false; $("send").disabled = false;
+    if (r.text.includes("[[TITLE]]")) {
+      $("out").style.display = "block";
+      renderReport(r.text);
+    }
+  } catch (e) {
+    bubble.textContent = errText(e);
+    msgs.pop();
+  } finally {
+    busy = false; $("send").disabled = false;
+  }
 };
-$("msg").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("send").click(); } });
-
-$("copy").onclick = async () => {
-  try { await navigator.clipboard.writeText($("outtxt").textContent); $("copy").textContent = "Copied"; }
-  catch (e) { $("copy").textContent = "Select and copy"; }
-  setTimeout(() => $("copy").textContent = "Copy", 1500);
-};
+$("msg").addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("send").click(); }
+});
 </script>
 </body>
 </html>

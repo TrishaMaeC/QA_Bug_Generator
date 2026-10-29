@@ -1,32 +1,6 @@
 ::: {align="center"}
 # 💜 TrishaQA --- Report Studio
 
-`<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&pause=1000&color=6D4AFF&center=true&vCenter=true&width=700&lines=Your+QA+Reporting+Assistant;Turn+testing+findings+into+clear+reports;Bug+Reports+%E2%80%A2+Improvements+%E2%80%A2+Acceptance+Criteria" alt="Animated typing introduction" />`{=html}
-
-```{=html}
-<p>
-```
-`<b>`{=html}A simple AI-powered QA report generator for clearer, more
-consistent testing documentation.`</b>`{=html}
-```{=html}
-</p>
-```
-```{=html}
-<p>
-```
-`<img src="https://img.shields.io/badge/HTML5-Frontend-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />`{=html}
-`<img src="https://img.shields.io/badge/CSS3-Styling-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />`{=html}
-`<img src="https://img.shields.io/badge/JavaScript-Logic-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />`{=html}
-`<img src="https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />`{=html}
-`<img src="https://img.shields.io/badge/Express-API-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />`{=html}
-`<img src="https://img.shields.io/badge/Groq-AI-F55036?style=for-the-badge" alt="Groq AI" />`{=html}
-```{=html}
-</p>
-```
-:::
-
-------------------------------------------------------------------------
-
 ## ✨ About the Project
 
 **TrishaQA --- Report Studio** helps QA testers turn testing
@@ -211,10 +185,7 @@ tracking system.
                                       such as localhost or HTTPS, or copy
                                       the text manually.
 
-  Animated banner does not appear     Check your internet connection or
-                                      remove the animated SVG image if
-                                      you prefer an offline README.
-  -----------------------------------------------------------------------
+-----------------------------------------------------------------------
 
 ## 🗺️ Possible Future Enhancements
 
@@ -226,8 +197,7 @@ tracking system.
 
 ------------------------------------------------------------------------
 
-::: {align="center"}
+
 ### Made for clearer QA documentation 💜
 
-`<img src="https://capsule-render.vercel.app/api?type=waving&color=6D4AFF&height=100&section=footer" alt="Decorative animated-style purple footer" />`{=html}
-:::
+

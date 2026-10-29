@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TrishaQA — Report Studio</title>
+<style>
+:root{--bg:#fff3f8;--card:#fff;--ink:#2b1a25;--mute:#8d6a7d;--line:#f5d2e2;--acc:#e0338a;--acc-ink:#fff;--bub:#fde4f0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1119;--card:#2a1824;--ink:#fbe9f2;--mute:#c79db4;--line:#47293a;--acc:#ff5fa8;--acc-ink:#2a0f1e;--bub:#3a2131;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1c1119;--card:#2a1824;--ink:#fbe9f2;--mute:#c79db4;--line:#47293a;--acc:#ff5fa8;--acc-ink:#2a0f1e;--bub:#3a2131;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 16px}
+.tabs{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.tabs button{border:0;background:var(--card);color:var(--ink);padding:8px 18px;font:inherit;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--acc);color:var(--acc-ink);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+label{display:block;font-weight:600;margin:12px 0 4px}
+label:first-child{margin-top:0}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px}
+textarea{min-height:76px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:600px){.row{grid-template-columns:1fr}}
+.btn{background:var(--acc);color:var(--acc-ink);border:0;border-radius:8px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+#chatlog{height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 2px 12px}
+.msg{max-width:88%;padding:9px 12px;border-radius:12px;white-space:pre-wrap;word-break:break-word}
+.msg.u{align-self:flex-end;background:var(--acc);color:var(--acc-ink)}
+.msg.a{align-self:flex-start;background:var(--bub)}
+.chatbar{display:flex;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.chatbar textarea{min-height:44px;height:44px}
+#out{margin-top:16px;display:none}
+#out pre{white-space:pre-wrap;word-break:break-word;margin:0;font:13.5px/1.55 ui-monospace,Consolas,monospace;overflow-x:auto}
+.outhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:600}
+.note{color:var(--mute);font-size:13px;margin-top:10px}
+body{background:radial-gradient(900px 420px at 88% -8%,rgba(255,143,194,.38),transparent 62%),var(--bg)}
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.brand h1{margin:0;font-size:26px;letter-spacing:-.3px}
+.brand h1 span{font-weight:500;color:var(--acc)}
+.brand .sub{margin:2px 0 0}
+.logo{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:24px;color:#fff;background:linear-gradient(135deg,#e0338a,#ff8fc2);box-shadow:0 6px 16px rgba(224,51,138,.35)}
+.card{box-shadow:0 8px 28px rgba(224,51,138,.10)}
+.theme{margin-left:auto;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+.theme:hover{border-color:var(--acc)}
+.tabs{background:var(--card);border-radius:999px;padding:3px;gap:3px}
+.tabs button{border-radius:999px;background:transparent}
+.tabs button[aria-selected="true"]{background:linear-gradient(135deg,var(--acc),#ff8fc2);color:#fff}
+.btn:not(.ghost){background:linear-gradient(135deg,var(--acc),#ff8fc2);color:#fff}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);border-color:var(--acc)}
+.msg.u{background:linear-gradient(135deg,var(--acc),#ff8fc2);color:#fff}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.thumb{position:relative;width:84px;height:84px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb button{position:absolute;top:2px;right:2px;width:22px;height:22px;border:0;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;cursor:pointer;line-height:1}
+.hidden{display:none}
+:root{--acc:#6d4aff;--acc2:#a78bfa;--acc-ink:#fff;--bg:color-mix(in srgb,var(--acc) 6%,#fff);--line:color-mix(in srgb,var(--acc) 20%,#fff);--bub:color-mix(in srgb,var(--acc) 12%,#fff);--mute:color-mix(in srgb,var(--acc) 22%,#6b6b78)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--acc-ink:#fff;--bg:color-mix(in srgb,var(--acc) 12%,#14121a);--card:color-mix(in srgb,var(--acc) 10%,#1d1b24);--ink:#f3f1f8;--mute:#b3adc4;--line:color-mix(in srgb,var(--acc) 25%,#26232f);--bub:color-mix(in srgb,var(--acc) 18%,#25222e)}}
+:root[data-theme="dark"]{--acc-ink:#fff;--bg:color-mix(in srgb,var(--acc) 12%,#14121a);--card:color-mix(in srgb,var(--acc) 10%,#1d1b24);--ink:#f3f1f8;--mute:#b3adc4;--line:color-mix(in srgb,var(--acc) 25%,#26232f);--bub:color-mix(in srgb,var(--acc) 18%,#25222e)}
+body{background:radial-gradient(900px 420px at 88% -8%,color-mix(in srgb,var(--acc2) 35%,transparent),transparent 62%),var(--bg)}
+.logo{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 6px 16px color-mix(in srgb,var(--acc) 35%,transparent)}
+.card{box-shadow:0 8px 28px color-mix(in srgb,var(--acc) 12%,transparent)}
+.tabs button[aria-selected="true"],.btn:not(.ghost),.msg.u{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff}
+.brand{flex-wrap:wrap}
+.theme{margin-left:0}
+.tools{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.sw{display:flex;gap:6px;align-items:center}
+.sw button{width:22px;height:22px;border-radius:50%;border:2px solid var(--card);cursor:pointer;padding:0;box-shadow:0 0 0 1px var(--line)}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
+.sw input{width:26px;height:26px;padding:0;border:0;background:none;cursor:pointer;border-radius:50%}
+</style>
+</head>
+<body>
+<main>
+  <header class="brand">
+    <div class="logo" aria-hidden="true">T</div>
+    <div>
+      <h1>TrishaQA <span>Report Studio</span></h1>
+      <p class="sub">Bug and improvement reports with acceptance criteria, ready to send.</p>
+    </div>
+    <div class="tools">
+      <div class="sw" id="sw" role="group" aria-label="Accent color"><input id="custom" type="color" value="#6d4aff" aria-label="Custom color" title="Custom color"></div>
+      <button class="theme" id="theme" type="button" aria-label="Switch between light and dark mode">Dark</button>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button id="tab-form" role="tab" aria-selected="true">Form</button>
+    <button id="tab-chat" role="tab" aria-selected="false">Chat</button>
+  </div>
+
+  <section id="form" class="card">
+    <div class="row">
+      <div>
+        <label for="type">Type</label>
+        <select id="type">
+          <option value="auto">Let the tool decide</option>
+          <option value="bug">Bug</option>
+          <option value="improvement">Improvement</option>
+        </select>
+      </div>
+      <div>
+        <label for="where">Where did it happen?</label>
+        <input id="where" placeholder="e.g. Admin → Audio Store → View Audio Store">
+      </div>
+    </div>
+    <label for="what">What happened?</label>
+    <textarea id="what" placeholder="Describe what you saw"></textarea>
+    <label for="exp">What should happen?</label>
+    <textarea id="exp" placeholder="Describe the expected behavior"></textarea>
+    <label for="steps">Steps or test data (optional)</label>
+    <textarea id="steps" placeholder="e.g. Field type: Phone, Min Length: 7"></textarea>
+    <label for="ev">Evidence notes (optional)</label>
+    <input id="ev" placeholder="e.g. 404 in console, error message text">
+    <label for="shots">Screenshots (optional, up to 4)</label>
+    <input id="shots" type="file" accept="image/*" multiple>
+    <div class="thumbs" id="thumbs"></div>
+    <p class="note" id="shotnote"></p>
+    <div class="actions">
+      <button class="btn" id="gen">Generate report</button>
+      <button class="btn ghost" id="clear">Clear</button>
+    </div>
+  </section>
+
+  <section id="chat" class="card hidden">
+    <div id="chatlog" aria-live="polite"></div>
+    <div class="chatbar">
+      <textarea id="msg" placeholder="Describe the problem…"></textarea>
+      <button class="btn" id="send">Send</button>
+    </div>
+    <p class="note">The assistant may ask up to 2 short questions before writing the report.</p>
+  </section>
+
+  <section id="out" class="card">
+    <div class="outhead"><span>Report</span><button class="btn ghost" id="copy">Copy</button></div>
+    <pre id="outtxt"></pre>
+  </section>
+  <p id="warn" class="note hidden">This page needs Claude access to generate reports. Open it from claude.ai while signed in.</p>
+</main>
+
+<script>
+const SYS = `You write QA reports for a QA tester. Follow these rules exactly.
+- Write reports in English, in simple and easy-to-understand wording. Never use first person.
+- First decide if it is a Bug or an Improvement. If unsure, say which one in a single line at the top.
+- Do not invent details. Use "–" for unknown Data. Put assumptions in one short line at the end.
+BUG format:
+Title: Module → Page → Feature — short problem
+Description: 2-4 sentences.
+Steps to Reproduce: a markdown table with columns Action | Data | Expected Result | Actual Result. Include earlier setup steps as Passed, and only ONE Failed row at the end.
+Acceptance Criteria: 1 to 2 short numbered bullets.
+IMPROVEMENT format:
+Title: Module → Page → Feature — short improvement
+Description with three parts: Current State (bullets), Proposed Improvements (bullets), Expected Benefits (bullets).
+Acceptance Criteria: 1 to 2 short numbered bullets.
+Do not add Impact or Recommendation sections.`;
+
+const $ = id => document.getElementById(id);
+
+function applyTheme(t){
+  document.documentElement.setAttribute("data-theme", t);
+  $("theme").textContent = t === "dark" ? "\u2600 Light" : "\u263e Dark";
+}
+let savedTheme = null;
+try { savedTheme = localStorage.getItem("tqa-theme"); } catch (e) {}
+applyTheme(savedTheme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+$("theme").onclick = () => {
+  const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  applyTheme(next);
+  try { localStorage.setItem("tqa-theme", next); } catch (e) {}
+};
+
+const PALETTE = [["Violet","#6d4aff","#a78bfa"],["Pink","#e0338a","#ff8fc2"],["Blue","#2563eb","#60a5fa"],["Teal","#0d9488","#5eead4"],["Green","#16a34a","#86efac"],["Orange","#ea580c","#fdba74"]];
+function setAccent(a, b){
+  const s = document.documentElement.style;
+  s.setProperty("--acc", a); s.setProperty("--acc2", b);
+  document.querySelectorAll("#sw button").forEach(x => x.setAttribute("aria-pressed", x.dataset.a === a));
+  if (/^#[0-9a-f]{6}$/i.test(a)) $("custom").value = a;
+  try { localStorage.setItem("tqa-accent", JSON.stringify([a, b])); } catch (e) {}
+}
+PALETTE.forEach(([n, a, b]) => {
+  const x = document.createElement("button");
+  x.type = "button"; x.title = n; x.setAttribute("aria-label", n + " color");
+  x.style.background = "linear-gradient(135deg," + a + "," + b + ")"; x.dataset.a = a;
+  x.onclick = () => setAccent(a, b);
+  $("sw").insertBefore(x, $("custom"));
+});
+$("custom").oninput = e => setAccent(e.target.value, "color-mix(in srgb," + e.target.value + " 55%,#fff)");
+let savedAcc = null;
+try { savedAcc = JSON.parse(localStorage.getItem("tqa-accent")); } catch (e) {}
+if (Array.isArray(savedAcc) && savedAcc.length === 2) setAccent(savedAcc[0], savedAcc[1]); else setAccent("#6d4aff", "#a78bfa");
+let sample = null, busy = false, msgs = [], shots = [];
+
+function toB64(f){
+  return new Promise((ok, no) => {
+    const r = new FileReader();
+    r.onload = () => ok({ media_type: f.type, data: String(r.result).split(",")[1] });
+    r.onerror = no;
+    r.readAsDataURL(f);
+  });
+}
+sample = async function(input, opts = {}){
+  const messages = typeof input === "string" ? [{ role:"user", content: input }] : input;
+  const images = await Promise.all((opts.images || []).map(toB64));
+  const r = await fetch("/api/generate", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ messages, images }) });
+  if (!r.ok) throw new Error("request failed");
+  const { text } = await r.json();
+  if (opts.onText) opts.onText({ text });
+  return { text };
+};
+sample.limits = async () => ({ images: true });
+
+function show(mode){
+  const isForm = mode === "form";
+  $("form").classList.toggle("hidden", !isForm);
+  $("chat").classList.toggle("hidden", isForm);
+  $("tab-form").setAttribute("aria-selected", isForm);
+  $("tab-chat").setAttribute("aria-selected", !isForm);
+}
+$("tab-form").onclick = () => show("form");
+$("tab-chat").onclick = () => show("chat");
+
+function errText(e){
+  if (e && e.code === "not_granted") return "Access to Claude was not granted for this page.";
+  if (e && e.code === "rate_limited") return "Too many requests. Please wait a moment and try again.";
+  return "Something went wrong. Please try again.";
+}
+
+$("gen").onclick = async () => {
+  if (busy) return;
+  if (!sample) { $("warn").classList.remove("hidden"); return; }
+  const what = $("what").value.trim();
+  if (!what) { $("what").focus(); return; }
+  const prompt = SYS + "\n\nWrite the report from these details.\n" +
+    "Type: " + $("type").value + "\n" +
+    "Where: " + ($("where").value.trim() || "not provided") + "\n" +
+    "What happened: " + what + "\n" +
+    "Expected: " + ($("exp").value.trim() || "not provided") + "\n" +
+    "Steps/data: " + ($("steps").value.trim() || "not provided") + "\n" +
+    "Evidence: " + ($("ev").value.trim() || "not provided") + "\nScreenshots attached: " + shots.length + (shots.length ? " (read visible error messages, labels, and values from them)" : "");
+  busy = true; $("gen").disabled = true; $("gen").textContent = "Generating…";
+  $("out").style.display = "block"; $("outtxt").textContent = "Thinking…";
+  try {
+    const opts = { cache:false, onText: ({text}) => { $("outtxt").textContent = text; } };
+    $("shotnote").textContent = "";
+    if (shots.length) {
+      let ok = false;
+      try { ok = (await sample.limits()).images; } catch (e) {}
+      if (ok) opts.images = shots;
+      else $("shotnote").textContent = "Screenshots are not supported here, so the report was made from the text only.";
+    }
+    const r = await sample(prompt, opts);
+    $("outtxt").textContent = r.text;
+  } catch (e) { $("outtxt").textContent = errText(e); }
+  busy = false; $("gen").disabled = false; $("gen").textContent = "Generate report";
+};
+
+$("clear").onclick = () => {
+  ["where","what","exp","steps","ev"].forEach(i => $(i).value = "");
+  $("type").value = "auto"; $("out").style.display = "none";
+  shots = []; renderThumbs(); $("shotnote").textContent = "";
+};
+
+function renderThumbs(){
+  $("thumbs").innerHTML = "";
+  shots.forEach((f, i) => {
+    const d = document.createElement("div"); d.className = "thumb";
+    const img = document.createElement("img"); img.src = URL.createObjectURL(f); img.alt = "Screenshot " + (i + 1);
+    const b = document.createElement("button"); b.type = "button"; b.textContent = "\u00d7"; b.setAttribute("aria-label", "Remove screenshot");
+    b.onclick = () => { shots.splice(i, 1); renderThumbs(); };
+    d.append(img, b); $("thumbs").appendChild(d);
+  });
+}
+$("shots").onchange = e => {
+  for (const f of e.target.files) { if (shots.length < 4 && f.type.startsWith("image/")) shots.push(f); }
+  e.target.value = ""; renderThumbs();
+};
+
+function addMsg(role, text){
+  const d = document.createElement("div");
+  d.className = "msg " + (role === "user" ? "u" : "a");
+  d.textContent = text;
+  $("chatlog").appendChild(d);
+  $("chatlog").scrollTop = $("chatlog").scrollHeight;
+  return d;
+}
+addMsg("assistant", "Hi! Tell me what you found, and where. Add details like what should have happened. I will write the report.");
+
+$("send").onclick = async () => {
+  if (busy) return;
+  if (!sample) { $("warn").classList.remove("hidden"); return; }
+  const t = $("msg").value.trim();
+  if (!t) return;
+  $("msg").value = "";
+  addMsg("user", t);
+  msgs.push({ role:"user", content:t });
+  const input = msgs.map((m, i) => i === 0
+    ? { role:"user", content: SYS + "\nIn chat: if key details are missing, ask at most 2 short questions (reply in the user's language). Otherwise write the report.\n\nUser: " + m.content }
+    : m);
+  const bubble = addMsg("assistant", "Thinking…");
+  busy = true; $("send").disabled = true;
+  try {
+    const r = await sample(input, { cache:false, onText: ({text}) => { bubble.textContent = text; $("chatlog").scrollTop = $("chatlog").scrollHeight; } });
+    bubble.textContent = r.text;
+    msgs.push({ role:"assistant", content:r.text });
+  } catch (e) { bubble.textContent = errText(e); msgs.pop(); }
+  busy = false; $("send").disabled = false;
+};
+$("msg").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("send").click(); } });
+
+$("copy").onclick = async () => {
+  try { await navigator.clipboard.writeText($("outtxt").textContent); $("copy").textContent = "Copied"; }
+  catch (e) { $("copy").textContent = "Select and copy"; }
+  setTimeout(() => $("copy").textContent = "Copy", 1500);
+};
+</script>
+</body>
+</html>

@@ -15,11 +15,11 @@ app.get("/", (req, res) => {
 });
 
 const KEY = process.env.GROQ_API_KEY;
-const TEXT_MODEL =
-  process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
-const VISION_MODEL =
-  process.env.GROQ_VISION_MODEL ||
-  "meta-llama/llama-4-scout-17b-16e-instruct";
+
+const TEXT_MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
+
+const VISION_MODEL = process.env.GROQ_VISION_MODEL || "qwen/qwen3.8-27b";
+
 
 app.post("/api/generate", async (req, res) => {
   try {

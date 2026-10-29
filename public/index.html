@@ -4,95 +4,417 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TrishaQA — Report Studio</title>
+
 <style>
-:root{--bg:#fff3f8;--card:#fff;--ink:#2b1a25;--mute:#8d6a7d;--line:#f5d2e2;--acc:#e0338a;--acc-ink:#fff;--bub:#fde4f0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1119;--card:#2a1824;--ink:#fbe9f2;--mute:#c79db4;--line:#47293a;--acc:#ff5fa8;--acc-ink:#2a0f1e;--bub:#3a2131;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#1c1119;--card:#2a1824;--ink:#fbe9f2;--mute:#c79db4;--line:#47293a;--acc:#ff5fa8;--acc-ink:#2a0f1e;--bub:#3a2131;color-scheme:dark}
+:root{
+  --bg:#fff3f8;
+  --card:#fff;
+  --ink:#2b1a25;
+  --mute:#8d6a7d;
+  --line:#f5d2e2;
+  --acc:#6d4aff;
+  --acc2:#a78bfa;
+  --acc-ink:#fff;
+  --bub:#fde4f0;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px)
+}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --acc-ink:#fff;
+    --bg:color-mix(in srgb,var(--acc) 12%,#14121a);
+    --card:color-mix(in srgb,var(--acc) 10%,#1d1b24);
+    --ink:#f3f1f8;
+    --mute:#b3adc4;
+    --line:color-mix(in srgb,var(--acc) 25%,#26232f);
+    --bub:color-mix(in srgb,var(--acc) 18%,#25222e);
+    color-scheme:dark
+  }
+}
+
+:root[data-theme="dark"]{
+  --acc-ink:#fff;
+  --bg:color-mix(in srgb,var(--acc) 12%,#14121a);
+  --card:color-mix(in srgb,var(--acc) 10%,#1d1b24);
+  --ink:#f3f1f8;
+  --mute:#b3adc4;
+  --line:color-mix(in srgb,var(--acc) 25%,#26232f);
+  --bub:color-mix(in srgb,var(--acc) 18%,#25222e);
+  color-scheme:dark
+}
+
 *{box-sizing:border-box}
+
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:860px;margin:0 auto;padding:20px 16px 40px}
+
+body{
+  margin:0;
+  background:radial-gradient(
+    900px 420px at 88% -8%,
+    color-mix(in srgb,var(--acc2) 35%,transparent),
+    transparent 62%
+  ),var(--bg);
+  color:var(--ink);
+  font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif
+}
+
+main{
+  max-width:860px;
+  margin:0 auto;
+  padding:20px 16px 40px
+}
+
 h1{font-size:22px;margin:0 0 4px}
+
 .sub{color:var(--mute);margin:0 0 16px}
-.tabs{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
-.tabs button{border:0;background:var(--card);color:var(--ink);padding:8px 18px;font:inherit;cursor:pointer}
-.tabs button[aria-selected="true"]{background:var(--acc);color:var(--acc-ink);font-weight:600}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
-label{display:block;font-weight:600;margin:12px 0 4px}
-label:first-child{margin-top:0}
-input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px}
-textarea{min-height:76px;resize:vertical}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media (max-width:600px){.row{grid-template-columns:1fr}}
-.btn{background:var(--acc);color:var(--acc-ink);border:0;border-radius:8px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer}
-.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
-.btn:disabled{opacity:.5;cursor:default}
-.actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-#chatlog{height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 2px 12px}
-.msg{max-width:88%;padding:9px 12px;border-radius:12px;white-space:pre-wrap;word-break:break-word}
-.msg.u{align-self:flex-end;background:var(--acc);color:var(--acc-ink)}
-.msg.a{align-self:flex-start;background:var(--bub)}
-.chatbar{display:flex;gap:8px;border-top:1px solid var(--line);padding-top:12px}
-.chatbar textarea{min-height:44px;height:44px}
-#out{margin-top:16px;display:none}
-#out pre{white-space:pre-wrap;word-break:break-word;margin:0;font:13.5px/1.55 ui-monospace,Consolas,monospace;overflow-x:auto}
-.outhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;font-weight:600}
-.note{color:var(--mute);font-size:13px;margin-top:10px}
-body{background:radial-gradient(900px 420px at 88% -8%,rgba(255,143,194,.38),transparent 62%),var(--bg)}
-.brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-.brand h1{margin:0;font-size:26px;letter-spacing:-.3px}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:18px;
+  flex-wrap:wrap
+}
+
+.brand h1{
+  margin:0;
+  font-size:26px;
+  letter-spacing:-.3px
+}
+
 .brand h1 span{font-weight:500;color:var(--acc)}
+
 .brand .sub{margin:2px 0 0}
-.logo{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:24px;color:#fff;background:linear-gradient(135deg,#e0338a,#ff8fc2);box-shadow:0 6px 16px rgba(224,51,138,.35)}
-.card{box-shadow:0 8px 28px rgba(224,51,138,.10)}
-.theme{margin-left:auto;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
-.theme:hover{border-color:var(--acc)}
-.tabs{background:var(--card);border-radius:999px;padding:3px;gap:3px}
-.tabs button{border-radius:999px;background:transparent}
-.tabs button[aria-selected="true"]{background:linear-gradient(135deg,var(--acc),#ff8fc2);color:#fff}
-.btn:not(.ghost){background:linear-gradient(135deg,var(--acc),#ff8fc2);color:#fff}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);border-color:var(--acc)}
-.msg.u{background:linear-gradient(135deg,var(--acc),#ff8fc2);color:#fff}
-.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.thumb{position:relative;width:84px;height:84px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.thumb button{position:absolute;top:2px;right:2px;width:22px;height:22px;border:0;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;cursor:pointer;line-height:1}
-.hidden{display:none}
-:root{--acc:#6d4aff;--acc2:#a78bfa;--acc-ink:#fff;--bg:color-mix(in srgb,var(--acc) 6%,#fff);--line:color-mix(in srgb,var(--acc) 20%,#fff);--bub:color-mix(in srgb,var(--acc) 12%,#fff);--mute:color-mix(in srgb,var(--acc) 22%,#6b6b78)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--acc-ink:#fff;--bg:color-mix(in srgb,var(--acc) 12%,#14121a);--card:color-mix(in srgb,var(--acc) 10%,#1d1b24);--ink:#f3f1f8;--mute:#b3adc4;--line:color-mix(in srgb,var(--acc) 25%,#26232f);--bub:color-mix(in srgb,var(--acc) 18%,#25222e)}}
-:root[data-theme="dark"]{--acc-ink:#fff;--bg:color-mix(in srgb,var(--acc) 12%,#14121a);--card:color-mix(in srgb,var(--acc) 10%,#1d1b24);--ink:#f3f1f8;--mute:#b3adc4;--line:color-mix(in srgb,var(--acc) 25%,#26232f);--bub:color-mix(in srgb,var(--acc) 18%,#25222e)}
-body{background:radial-gradient(900px 420px at 88% -8%,color-mix(in srgb,var(--acc2) 35%,transparent),transparent 62%),var(--bg)}
-.logo{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 6px 16px color-mix(in srgb,var(--acc) 35%,transparent)}
-.card{box-shadow:0 8px 28px color-mix(in srgb,var(--acc) 12%,transparent)}
-.tabs button[aria-selected="true"],.btn:not(.ghost),.msg.u{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff}
-.brand{flex-wrap:wrap}
-.theme{margin-left:0}
-.tools{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+
+.logo{
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  font-size:24px;
+  color:#fff;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  box-shadow:0 6px 16px color-mix(in srgb,var(--acc) 35%,transparent)
+}
+
+.tools{
+  margin-left:auto;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:flex-end
+}
+
 .sw{display:flex;gap:6px;align-items:center}
-.sw button{width:22px;height:22px;border-radius:50%;border:2px solid var(--card);cursor:pointer;padding:0;box-shadow:0 0 0 1px var(--line)}
-.sw button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
-.sw input{width:26px;height:26px;padding:0;border:0;background:none;cursor:pointer;border-radius:50%}
-.env-fields{margin-top:18px;padding:12px;border:1px solid var(--line);border-radius:10px}
-.env-fields summary{font-weight:700;cursor:pointer;color:var(--acc);padding:4px 0}
+
+.sw button{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  border:2px solid var(--card);
+  cursor:pointer;
+  padding:0;
+  box-shadow:0 0 0 1px var(--line)
+}
+
+.sw button[aria-pressed="true"]{
+  box-shadow:0 0 0 2px var(--ink)
+}
+
+.sw input{
+  width:26px;
+  height:26px;
+  padding:0;
+  border:0;
+  background:none;
+  cursor:pointer;
+  border-radius:50%
+}
+
+.theme{
+  margin-left:0;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--ink);
+  border-radius:999px;
+  padding:8px 14px;
+  font:inherit;
+  font-weight:600;
+  cursor:pointer;
+  white-space:nowrap
+}
+
+.theme:hover{border-color:var(--acc)}
+
+.tabs{
+  display:inline-flex;
+  border:1px solid var(--line);
+  background:var(--card);
+  border-radius:999px;
+  padding:3px;
+  gap:3px;
+  overflow:hidden;
+  margin-bottom:16px
+}
+
+.tabs button{
+  border:0;
+  border-radius:999px;
+  background:transparent;
+  color:var(--ink);
+  padding:8px 18px;
+  font:inherit;
+  cursor:pointer
+}
+
+.tabs button[aria-selected="true"]{
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:#fff;
+  font-weight:600
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 8px 28px color-mix(in srgb,var(--acc) 12%,transparent)
+}
+
+label{
+  display:block;
+  font-weight:600;
+  margin:12px 0 4px
+}
+
+label:first-child{margin-top:0}
+
+input,select,textarea{
+  width:100%;
+  font:inherit;
+  color:var(--ink);
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:9px 10px
+}
+
+textarea{min-height:76px;resize:vertical}
+
+input:focus,select:focus,textarea:focus{
+  outline:2px solid var(--acc);
+  border-color:var(--acc)
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px
+}
+
+@media(max-width:600px){
+  .row{grid-template-columns:1fr}
+  .tools{margin-left:0}
+  .report-output .outhead{align-items:flex-start}
+}
+
+.btn{
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:#fff;
+  border:0;
+  border-radius:8px;
+  padding:10px 18px;
+  font:inherit;
+  font-weight:600;
+  cursor:pointer
+}
+
+.btn.ghost{
+  background:transparent;
+  color:var(--ink);
+  border:1px solid var(--line)
+}
+
+.btn:disabled{opacity:.5;cursor:default}
+
+.actions{
+  display:flex;
+  gap:8px;
+  margin-top:14px;
+  flex-wrap:wrap
+}
+
+.hidden{display:none!important}
+
+#chatlog{
+  height:380px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:4px 2px 12px
+}
+
+.msg{
+  max-width:88%;
+  padding:9px 12px;
+  border-radius:12px;
+  white-space:pre-wrap;
+  word-break:break-word
+}
+
+.msg.u{
+  align-self:flex-end;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:#fff
+}
+
+.msg.a{
+  align-self:flex-start;
+  background:var(--bub)
+}
+
+.chatbar{
+  display:flex;
+  gap:8px;
+  border-top:1px solid var(--line);
+  padding-top:12px
+}
+
+.chatbar textarea{
+  min-height:44px;
+  height:44px
+}
+
+.chatbar .btn{align-self:flex-end}
+
+.note{
+  color:var(--mute);
+  font-size:13px;
+  margin-top:10px
+}
+
+.thumbs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:8px
+}
+
+.thumb{
+  position:relative;
+  width:84px;
+  height:84px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden
+}
+
+.thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block
+}
+
+.thumb button{
+  position:absolute;
+  top:2px;
+  right:2px;
+  width:22px;
+  height:22px;
+  border:0;
+  border-radius:50%;
+  background:rgba(0,0,0,.65);
+  color:#fff;
+  cursor:pointer;
+  line-height:1
+}
+
+.env-fields{
+  margin-top:18px;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:10px
+}
+
+.env-fields summary{
+  font-weight:700;
+  cursor:pointer;
+  color:var(--acc);
+  padding:4px 0
+}
+
 .env-fields label{margin-top:12px}
+
 .env-fields input{margin-top:2px}
-.output-section{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px;min-width:0}
-.output-section .outhead span{min-width:0;overflow-wrap:anywhere}
-.output-section pre{white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;font:13.5px/1.65 ui-monospace,Consolas,monospace;margin:0}
-.copy-part{flex-shrink:0;padding:6px 10px;font-size:12px}
+
+/* Separate report panels for Form and Chat */
+.report-output{
+  margin-top:16px;
+  display:none
+}
+
+.report-output .output-section{
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:12px;
+  margin-top:12px;
+  min-width:0
+}
+
+.report-output .outhead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:8px;
+  font-weight:600
+}
+
+.report-output .outhead span{
+  min-width:0;
+  overflow-wrap:anywhere
+}
+
+.report-output pre{
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  font:13.5px/1.65 ui-monospace,Consolas,monospace;
+  margin:0
+}
+
+.report-output .copy-part{
+  flex-shrink:0;
+  padding:6px 10px;
+  font-size:12px
+}
 </style>
 </head>
+
 <body>
 <main>
   <header class="brand">
     <div class="logo" aria-hidden="true">T</div>
+
     <div>
       <h1>TrishaQA <span>Report Studio</span></h1>
       <p class="sub">Bug and improvement reports with acceptance criteria, ready to send.</p>
     </div>
+
     <div class="tools">
-      <div class="sw" id="sw" role="group" aria-label="Accent color"><input id="custom" type="color" value="#6d4aff" aria-label="Custom color" title="Custom color"></div>
-      <button class="theme" id="theme" type="button" aria-label="Switch between light and dark mode">Dark</button>
+      <div class="sw" id="sw" role="group" aria-label="Accent color">
+        <input id="custom" type="color" value="#6d4aff"
+          aria-label="Custom color" title="Custom color">
+      </div>
+      <button class="theme" id="theme" type="button"
+        aria-label="Switch between light and dark mode">Dark</button>
     </div>
   </header>
 
@@ -101,6 +423,7 @@ body{background:radial-gradient(900px 420px at 88% -8%,color-mix(in srgb,var(--a
     <button id="tab-chat" role="tab" aria-selected="false">Chat</button>
   </div>
 
+  <!-- FORM TAB -->
   <section id="form" class="card">
     <div class="row">
       <div>
@@ -111,34 +434,47 @@ body{background:radial-gradient(900px 420px at 88% -8%,color-mix(in srgb,var(--a
           <option value="improvement">Improvement</option>
         </select>
       </div>
+
       <div>
         <label for="where">Where did it happen?</label>
         <input id="where" placeholder="e.g. Admin → Audio Store → View Audio Store">
       </div>
     </div>
+
     <label for="what">What happened?</label>
     <textarea id="what" placeholder="Describe what you saw"></textarea>
+
     <label for="exp">What should happen?</label>
     <textarea id="exp" placeholder="Describe the expected behavior"></textarea>
+
     <label for="steps">Steps or test data (optional)</label>
     <textarea id="steps" placeholder="e.g. Field type: Phone, Min Length: 7"></textarea>
+
     <label for="ev">Evidence notes (optional)</label>
     <input id="ev" placeholder="e.g. 404 in console, error message text">
 
     <details class="env-fields">
       <summary>Environment Details (Optional)</summary>
+
       <label for="envApp">Application</label>
       <input id="envApp" placeholder="e.g. APNTalk">
+
       <label for="envUrl">URL</label>
       <input id="envUrl" type="url" placeholder="e.g. https://example.com">
+
       <label for="envUsername">Username</label>
       <input id="envUsername" autocomplete="off" placeholder="Enter test username">
+
       <label for="envPassword">Password (optional)</label>
-      <input id="envPassword" type="password" autocomplete="new-password" placeholder="Enter test password">
+      <input id="envPassword" type="password" autocomplete="new-password"
+        placeholder="Enter test password">
+
       <label for="envBrowser">Browser</label>
       <input id="envBrowser" placeholder="e.g. Google Chrome">
+
       <label for="envDateTime">Date and Time</label>
       <input id="envDateTime" placeholder="e.g. 09/07/2026, 10:34 AM">
+
       <p class="note">Environment details are added locally. The password is never sent to the AI.</p>
     </details>
 
@@ -146,42 +482,106 @@ body{background:radial-gradient(900px 420px at 88% -8%,color-mix(in srgb,var(--a
     <input id="shots" type="file" accept="image/*" multiple>
     <div class="thumbs" id="thumbs"></div>
     <p class="note" id="shotnote"></p>
+
     <div class="actions">
       <button class="btn" id="gen">Generate report</button>
       <button class="btn ghost" id="clear">Clear</button>
     </div>
+
+    <!-- FORM REPORT OUTPUT: visible only inside Form -->
+    <section id="formOut" class="card report-output">
+      <h2 style="margin:0 0 14px;font-size:19px">Generated Report</h2>
+
+      <div class="output-section">
+        <div class="outhead">
+          <span>Title</span>
+          <button class="btn ghost copy-part" data-copy="formTitleOut">Copy Title</button>
+        </div>
+        <pre id="formTitleOut"></pre>
+      </div>
+
+      <div class="output-section">
+        <div class="outhead">
+          <span>Description + Steps to Reproduce</span>
+          <button class="btn ghost copy-part" data-copy="formDescriptionOut">Copy Section</button>
+        </div>
+        <pre id="formDescriptionOut"></pre>
+      </div>
+
+      <div class="output-section">
+        <div class="outhead">
+          <span>Environment</span>
+          <button class="btn ghost copy-part" data-copy="formEnvironmentOut">Copy Environment</button>
+        </div>
+        <pre id="formEnvironmentOut"></pre>
+      </div>
+
+      <div class="output-section">
+        <div class="outhead">
+          <span>Acceptance Criteria</span>
+          <button class="btn ghost copy-part" data-copy="formCriteriaOut">Copy Criteria</button>
+        </div>
+        <pre id="formCriteriaOut"></pre>
+      </div>
+
+      <p class="note copy-note" aria-live="polite"></p>
+    </section>
   </section>
 
+  <!-- CHAT TAB -->
   <section id="chat" class="card hidden">
     <div id="chatlog" aria-live="polite"></div>
+
     <div class="chatbar">
       <textarea id="msg" placeholder="Describe the problem…"></textarea>
       <button class="btn" id="send">Send</button>
     </div>
+
     <p class="note">The assistant may ask up to 2 short questions before writing the report.</p>
+
+    <!-- CHAT REPORT OUTPUT: separate from conversation messages -->
+    <section id="chatOut" class="card report-output">
+      <h2 style="margin:0 0 14px;font-size:19px">Generated Report</h2>
+
+      <div class="output-section">
+        <div class="outhead">
+          <span>Title</span>
+          <button class="btn ghost copy-part" data-copy="chatTitleOut">Copy Title</button>
+        </div>
+        <pre id="chatTitleOut"></pre>
+      </div>
+
+      <div class="output-section">
+        <div class="outhead">
+          <span>Description + Steps to Reproduce</span>
+          <button class="btn ghost copy-part" data-copy="chatDescriptionOut">Copy Section</button>
+        </div>
+        <pre id="chatDescriptionOut"></pre>
+      </div>
+
+      <div class="output-section">
+        <div class="outhead">
+          <span>Environment</span>
+          <button class="btn ghost copy-part" data-copy="chatEnvironmentOut">Copy Environment</button>
+        </div>
+        <pre id="chatEnvironmentOut"></pre>
+      </div>
+
+      <div class="output-section">
+        <div class="outhead">
+          <span>Acceptance Criteria</span>
+          <button class="btn ghost copy-part" data-copy="chatCriteriaOut">Copy Criteria</button>
+        </div>
+        <pre id="chatCriteriaOut"></pre>
+      </div>
+
+      <p class="note copy-note" aria-live="polite"></p>
+    </section>
   </section>
 
-  <section id="out" class="card">
-    <h2 style="margin:0 0 14px;font-size:19px">Generated Report</h2>
-    <div class="output-section">
-      <div class="outhead"><span>Title</span><button class="btn ghost copy-part" data-copy="titleOut">Copy Title</button></div>
-      <pre id="titleOut"></pre>
-    </div>
-    <div class="output-section">
-      <div class="outhead"><span>Description + Steps to Reproduce</span><button class="btn ghost copy-part" data-copy="descriptionOut">Copy Section</button></div>
-      <pre id="descriptionOut"></pre>
-    </div>
-    <div class="output-section">
-      <div class="outhead"><span>Environment</span><button class="btn ghost copy-part" data-copy="environmentOut">Copy Environment</button></div>
-      <pre id="environmentOut"></pre>
-    </div>
-    <div class="output-section">
-      <div class="outhead"><span>Acceptance Criteria</span><button class="btn ghost copy-part" data-copy="criteriaOut">Copy Criteria</button></div>
-      <pre id="criteriaOut"></pre>
-    </div>
-    <p class="note" id="copyNote" aria-live="polite"></p>
-  </section>
-  <p id="warn" class="note hidden">The report generator is currently unavailable. Please try again later.</p>
+  <p id="warn" class="note hidden">
+    The report generator is currently unavailable. Please try again later.
+  </p>
 </main>
 
 <script>
@@ -209,109 +609,212 @@ Do not omit section markers or add extra text outside the markers.`;
 
 const $ = id => document.getElementById(id);
 
-function applyTheme(t){
-  document.documentElement.setAttribute("data-theme", t);
-  $("theme").textContent = t === "dark" ? "\u2600 Light" : "\u263e Dark";
+let sample = null;
+let busy = false;
+let msgs = [];
+let shots = [];
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  $("theme").textContent = theme === "dark" ? "☀ Light" : "☾ Dark";
 }
+
 let savedTheme = null;
-try { savedTheme = localStorage.getItem("tqa-theme"); } catch (e) {}
-applyTheme(savedTheme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+try {
+  savedTheme = localStorage.getItem("tqa-theme");
+} catch (e) {}
+
+applyTheme(
+  savedTheme ||
+  (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+);
+
 $("theme").onclick = () => {
-  const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  const next =
+    document.documentElement.getAttribute("data-theme") === "dark"
+      ? "light"
+      : "dark";
+
   applyTheme(next);
-  try { localStorage.setItem("tqa-theme", next); } catch (e) {}
+
+  try {
+    localStorage.setItem("tqa-theme", next);
+  } catch (e) {}
 };
 
-const PALETTE = [["Violet","#6d4aff","#a78bfa"],["Pink","#e0338a","#ff8fc2"],["Blue","#2563eb","#60a5fa"],["Teal","#0d9488","#5eead4"],["Green","#16a34a","#86efac"],["Orange","#ea580c","#fdba74"]];
-function setAccent(a, b){
-  const s = document.documentElement.style;
-  s.setProperty("--acc", a); s.setProperty("--acc2", b);
-  document.querySelectorAll("#sw button").forEach(x => x.setAttribute("aria-pressed", x.dataset.a === a));
-  if (/^#[0-9a-f]{6}$/i.test(a)) $("custom").value = a;
-  try { localStorage.setItem("tqa-accent", JSON.stringify([a, b])); } catch (e) {}
+const PALETTE = [
+  ["Violet", "#6d4aff", "#a78bfa"],
+  ["Pink", "#e0338a", "#ff8fc2"],
+  ["Blue", "#2563eb", "#60a5fa"],
+  ["Teal", "#0d9488", "#5eead4"],
+  ["Green", "#16a34a", "#86efac"],
+  ["Orange", "#ea580c", "#fdba74"]
+];
+
+function setAccent(a, b) {
+  const style = document.documentElement.style;
+
+  style.setProperty("--acc", a);
+  style.setProperty("--acc2", b);
+
+  document.querySelectorAll("#sw button").forEach(button => {
+    button.setAttribute("aria-pressed", button.dataset.a === a);
+  });
+
+  if (/^#[0-9a-f]{6}$/i.test(a)) {
+    $("custom").value = a;
+  }
+
+  try {
+    localStorage.setItem("tqa-accent", JSON.stringify([a, b]));
+  } catch (e) {}
 }
-PALETTE.forEach(([n, a, b]) => {
-  const x = document.createElement("button");
-  x.type = "button"; x.title = n; x.setAttribute("aria-label", n + " color");
-  x.style.background = "linear-gradient(135deg," + a + "," + b + ")"; x.dataset.a = a;
-  x.onclick = () => setAccent(a, b);
-  $("sw").insertBefore(x, $("custom"));
+
+PALETTE.forEach(([name, a, b]) => {
+  const button = document.createElement("button");
+
+  button.type = "button";
+  button.title = name;
+  button.setAttribute("aria-label", name + " color");
+  button.style.background = `linear-gradient(135deg,${a},${b})`;
+  button.dataset.a = a;
+  button.onclick = () => setAccent(a, b);
+
+  $("sw").insertBefore(button, $("custom"));
 });
-$("custom").oninput = e => setAccent(e.target.value, "color-mix(in srgb," + e.target.value + " 55%,#fff)");
-let savedAcc = null;
-try { savedAcc = JSON.parse(localStorage.getItem("tqa-accent")); } catch (e) {}
-if (Array.isArray(savedAcc) && savedAcc.length === 2) setAccent(savedAcc[0], savedAcc[1]); else setAccent("#6d4aff", "#a78bfa");
 
-let sample = null, busy = false, msgs = [], shots = [];
+$("custom").oninput = event => {
+  const color = event.target.value;
+  setAccent(color, `color-mix(in srgb,${color} 55%,#fff)`);
+};
 
-function toB64(f){
-  return new Promise((ok, no) => {
-    const r = new FileReader();
-    r.onload = () => ok({ media_type: f.type, data: String(r.result).split(",")[1] });
-    r.onerror = no;
-    r.readAsDataURL(f);
+let savedAccent = null;
+
+try {
+  savedAccent = JSON.parse(localStorage.getItem("tqa-accent"));
+} catch (e) {}
+
+if (Array.isArray(savedAccent) && savedAccent.length === 2) {
+  setAccent(savedAccent[0], savedAccent[1]);
+} else {
+  setAccent("#6d4aff", "#a78bfa");
+}
+
+/* Convert screenshot files to base64 for the API. */
+function toB64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve({
+        media_type: file.type,
+        data: String(reader.result).split(",")[1]
+      });
+    };
+
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
   });
 }
 
-sample = async function(input, opts = {}){
-  const messages = typeof input === "string" ? [{ role:"user", content: input }] : input;
+/* API wrapper. */
+sample = async function(input, opts = {}) {
+  const messages =
+    typeof input === "string"
+      ? [{ role: "user", content: input }]
+      : input;
+
   const images = await Promise.all((opts.images || []).map(toB64));
-  const r = await fetch("/api/generate", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
+
+  const response = await fetch("/api/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ messages, images })
   });
-  const data = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(data.error || "Request failed");
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.error || "Request failed");
+  }
+
   const result = { text: data.text || "" };
-  if (opts.onText) opts.onText(result);
+
+  if (opts.onText) {
+    opts.onText(result);
+  }
+
   return result;
 };
+
 sample.limits = async () => ({ images: true });
 
-function show(mode){
+/* Switch tabs without moving or mixing report results. */
+function show(mode) {
   const isForm = mode === "form";
+
   $("form").classList.toggle("hidden", !isForm);
   $("chat").classList.toggle("hidden", isForm);
-  $("tab-form").setAttribute("aria-selected", isForm);
-  $("tab-chat").setAttribute("aria-selected", !isForm);
+
+  $("tab-form").setAttribute("aria-selected", String(isForm));
+  $("tab-chat").setAttribute("aria-selected", String(!isForm));
 }
+
 $("tab-form").onclick = () => show("form");
 $("tab-chat").onclick = () => show("chat");
 
-function errText(e){
-  return e?.message && e.message !== "Request failed"
-    ? "Generation failed: " + e.message
+function errText(error) {
+  return error?.message && error.message !== "Request failed"
+    ? "Generation failed: " + error.message
     : "Something went wrong. Please try again.";
 }
 
+/* Parse the AI's marked report into separate sections. */
 function parseReport(text) {
-  const sections = { titleOut:"", descriptionOut:"", criteriaOut:"" };
+  const sections = {
+    titleOut: "",
+    descriptionOut: "",
+    criteriaOut: ""
+  };
+
   const markers = [
-    ["[[TITLE]]","titleOut"],
-    ["[[DESCRIPTION_STEPS]]","descriptionOut"],
-    ["[[ACCEPTANCE_CRITERIA]]","criteriaOut"]
+    ["[[TITLE]]", "titleOut"],
+    ["[[DESCRIPTION_STEPS]]", "descriptionOut"],
+    ["[[ACCEPTANCE_CRITERIA]]", "criteriaOut"]
   ];
+
   for (let i = 0; i < markers.length; i++) {
     const [marker, id] = markers[i];
     const start = text.indexOf(marker);
+
     if (start === -1) continue;
+
     const contentStart = start + marker.length;
-    const nextPositions = markers.slice(i + 1)
+
+    const nextPositions = markers
+      .slice(i + 1)
       .map(([nextMarker]) => text.indexOf(nextMarker, contentStart))
-      .filter(pos => pos !== -1);
-    const end = nextPositions.length ? Math.min(...nextPositions) : text.length;
+      .filter(position => position !== -1);
+
+    const end = nextPositions.length
+      ? Math.min(...nextPositions)
+      : text.length;
+
     sections[id] = text.slice(contentStart, end).trim();
   }
+
   sections.titleOut = sections.titleOut.replace(/^Title:\s*/i, "");
+
   sections.descriptionOut = sections.descriptionOut
     .replace(/^Description:\s*/i, "")
     .replace(/^Steps to Reproduce:\s*/gim, "")
     .trim();
+
   return sections;
 }
 
-function buildEnvironment(){
+/* Build Environment locally. Password is not sent to the AI. */
+function buildEnvironment() {
   const values = [
     ["Application", $("envApp").value.trim()],
     ["URL", $("envUrl").value.trim()],
@@ -320,30 +823,21 @@ function buildEnvironment(){
     ["Browser", $("envBrowser").value.trim()],
     ["Date and Time", $("envDateTime").value.trim()]
   ];
-  const filled = values.filter(([, value]) => value !== "");
-  if (!filled.length) return "Environment:\n\n–";
-  return "Environment:\n\n" + values.map(([label, value]) =>
-    label + ": " + (value || "–")
-  ).join("\n\n");
-}
 
-function renderReport(text){
-  const sections = parseReport(text);
-  const hasMarkers = text.includes("[[TITLE]]");
-  if (!hasMarkers) {
-    $("titleOut").textContent = "Could not separate the generated sections.";
-    $("descriptionOut").textContent = text.trim() || "–";
-    $("criteriaOut").textContent = "–";
-  } else {
-    $("titleOut").textContent = sections.titleOut || "–";
-    $("descriptionOut").textContent = sections.descriptionOut || "–";
-    $("criteriaOut").textContent = sections.criteriaOut || "–";
+  const hasValues = values.some(([, value]) => value !== "");
+
+  if (!hasValues) {
+    return "Environment:\n\n–";
   }
-  // Password is read and inserted locally only; it is never added to the AI prompt.
-  $("environmentOut").textContent = buildEnvironment();
+
+  return "Environment:\n\n" +
+    values.map(([label, value]) => {
+      return label + ": " + (value || "–");
+    }).join("\n\n");
 }
 
-function getEnvironmentForPrompt(){
+/* Environment context for AI explicitly excludes the password. */
+function getEnvironmentForPrompt() {
   return [
     "Application: " + ($("envApp").value.trim() || "–"),
     "URL: " + ($("envUrl").value.trim() || "–"),
@@ -353,125 +847,279 @@ function getEnvironmentForPrompt(){
   ].join("\n");
 }
 
+/*
+ * Render a report into its own panel.
+ * target = "form" updates only the Form report.
+ * target = "chat" updates only the Chat report.
+ */
+function renderReport(target, text) {
+  const prefix = target === "form" ? "form" : "chat";
+  const output = $(prefix + "Out");
+  const sections = parseReport(text);
+  const hasMarkers = text.includes("[[TITLE]]");
+
+  $(prefix + "TitleOut").textContent = hasMarkers
+    ? sections.titleOut || "–"
+    : "Could not separate the generated sections.";
+
+  $(prefix + "DescriptionOut").textContent = hasMarkers
+    ? sections.descriptionOut || "–"
+    : text.trim() || "–";
+
+  $(prefix + "EnvironmentOut").textContent = buildEnvironment();
+
+  $(prefix + "CriteriaOut").textContent = hasMarkers
+    ? sections.criteriaOut || "–"
+    : "–";
+
+  output.style.display = "block";
+  output.querySelector(".copy-note").textContent = "";
+}
+
+/* FORM: generate a report only in the Form panel. */
 $("gen").onclick = async () => {
   if (busy) return;
-  const what = $("what").value.trim();
-  if (!what) { $("what").focus(); return; }
 
-  const prompt = SYS + "\n\nWrite the report from these details.\n" +
+  const what = $("what").value.trim();
+
+  if (!what) {
+    $("what").focus();
+    return;
+  }
+
+  const prompt =
+    SYS +
+    "\n\nWrite the report from these details.\n" +
     "Type: " + $("type").value + "\n" +
     "Where: " + ($("where").value.trim() || "not provided") + "\n" +
     "What happened: " + what + "\n" +
     "Expected: " + ($("exp").value.trim() || "not provided") + "\n" +
     "Steps/data: " + ($("steps").value.trim() || "not provided") + "\n" +
     "Evidence: " + ($("ev").value.trim() || "not provided") + "\n" +
-    "Environment context (do not repeat it in output):\n" + getEnvironmentForPrompt() +
+    "Environment context (do not repeat it in output):\n" +
+    getEnvironmentForPrompt() +
     "\nScreenshots attached: " + shots.length +
-    (shots.length ? " (read visible error messages, labels, and values from them)" : "");
+    (shots.length
+      ? " (read visible error messages, labels, and values from them)"
+      : "");
 
-  busy = true; $("gen").disabled = true; $("gen").textContent = "Generating…";
-  $("out").style.display = "block";
-  $("titleOut").textContent = "Generating…";
-  $("descriptionOut").textContent = "Generating…";
-  $("environmentOut").textContent = buildEnvironment();
-  $("criteriaOut").textContent = "Generating…";
-  $("copyNote").textContent = "";
+  busy = true;
+  $("gen").disabled = true;
+  $("gen").textContent = "Generating…";
+
+  $("formOut").style.display = "block";
+  $("formTitleOut").textContent = "Generating…";
+  $("formDescriptionOut").textContent = "Generating…";
+  $("formEnvironmentOut").textContent = buildEnvironment();
+  $("formCriteriaOut").textContent = "Generating…";
+  $("formOut").querySelector(".copy-note").textContent = "";
+  $("shotnote").textContent = "";
+
   try {
-    const opts = { cache:false, onText: ({text}) => renderReport(text) };
-    $("shotnote").textContent = "";
-    if (shots.length) opts.images = shots;
-    const r = await sample(prompt, opts);
-    renderReport(r.text);
-  } catch (e) {
-    $("titleOut").textContent = "Unable to generate report.";
-    $("descriptionOut").textContent = errText(e);
-    $("environmentOut").textContent = buildEnvironment();
-    $("criteriaOut").textContent = "–";
+    const options = {
+      cache: false,
+      onText: ({ text }) => renderReport("form", text)
+    };
+
+    if (shots.length) {
+      options.images = shots;
+    }
+
+    const result = await sample(prompt, options);
+    renderReport("form", result.text);
+  } catch (error) {
+    $("formTitleOut").textContent = "Unable to generate report.";
+    $("formDescriptionOut").textContent = errText(error);
+    $("formEnvironmentOut").textContent = buildEnvironment();
+    $("formCriteriaOut").textContent = "–";
   } finally {
-    busy = false; $("gen").disabled = false; $("gen").textContent = "Generate report";
+    busy = false;
+    $("gen").disabled = false;
+    $("gen").textContent = "Generate report";
   }
 };
 
+/* Clear only Form fields and the Form report. */
 $("clear").onclick = () => {
-  ["where","what","exp","steps","ev","envApp","envUrl","envUsername","envPassword","envBrowser","envDateTime"].forEach(i => $(i).value = "");
+  [
+    "where",
+    "what",
+    "exp",
+    "steps",
+    "ev",
+    "envApp",
+    "envUrl",
+    "envUsername",
+    "envPassword",
+    "envBrowser",
+    "envDateTime"
+  ].forEach(id => {
+    $(id).value = "";
+  });
+
   $("type").value = "auto";
-  $("out").style.display = "none";
-  $("shots") .value = "";
-  shots = []; renderThumbs(); $("shotnote").textContent = "";
+  $("formOut").style.display = "none";
+  $("shots").value = "";
+
+  shots = [];
+  renderThumbs();
+
+  $("shotnote").textContent = "";
 };
 
-function renderThumbs(){
+/* Screenshot thumbnails. */
+function renderThumbs() {
   $("thumbs").innerHTML = "";
-  shots.forEach((f, i) => {
-    const d = document.createElement("div"); d.className = "thumb";
-    const img = document.createElement("img"); img.src = URL.createObjectURL(f); img.alt = "Screenshot " + (i + 1);
-    const b = document.createElement("button"); b.type = "button"; b.textContent = "\u00d7"; b.setAttribute("aria-label", "Remove screenshot");
-    b.onclick = () => { shots.splice(i, 1); renderThumbs(); };
-    d.append(img, b); $("thumbs").appendChild(d);
+
+  shots.forEach((file, index) => {
+    const container = document.createElement("div");
+    container.className = "thumb";
+
+    const image = document.createElement("img");
+    image.src = URL.createObjectURL(file);
+    image.alt = "Screenshot " + (index + 1);
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.textContent = "×";
+    remove.setAttribute("aria-label", "Remove screenshot");
+
+    remove.onclick = () => {
+      shots.splice(index, 1);
+      renderThumbs();
+    };
+
+    container.append(image, remove);
+    $("thumbs").appendChild(container);
   });
 }
-$("shots").onchange = e => {
-  for (const f of e.target.files) {
-    if (shots.length < 4 && f.type.startsWith("image/")) shots.push(f);
+
+$("shots").onchange = event => {
+  for (const file of event.target.files) {
+    if (shots.length < 4 && file.type.startsWith("image/")) {
+      shots.push(file);
+    }
   }
-  e.target.value = ""; renderThumbs();
+
+  if (event.target.files.length + shots.length > 4) {
+    $("shotnote").textContent = "A maximum of 4 screenshots is allowed.";
+  } else {
+    $("shotnote").textContent = "";
+  }
+
+  event.target.value = "";
+  renderThumbs();
 };
 
+/* Independent copy buttons for both report panels. */
 document.querySelectorAll(".copy-part").forEach(button => {
   button.onclick = async () => {
     const original = button.textContent;
+    const output = $(button.dataset.copy);
+    const panel = button.closest(".report-output");
+    const note = panel.querySelector(".copy-note");
+
     try {
-      await navigator.clipboard.writeText($(button.dataset.copy).textContent);
+      await navigator.clipboard.writeText(output.textContent);
       button.textContent = "Copied!";
-      $("copyNote").textContent = "";
-    } catch (e) {
-      $("copyNote").textContent = "Copy was blocked by the browser. Select the text and copy it manually.";
+      note.textContent = "";
+    } catch (error) {
+      note.textContent =
+        "Copy was blocked by the browser. Select the text and copy it manually.";
     }
-    setTimeout(() => button.textContent = original, 1500);
+
+    setTimeout(() => {
+      button.textContent = original;
+    }, 1500);
   };
 });
 
-function addMsg(role, text){
-  const d = document.createElement("div");
-  d.className = "msg " + (role === "user" ? "u" : "a");
-  d.textContent = text;
-  $("chatlog").appendChild(d);
-  $("chatlog").scrollTop = $("chatlog").scrollHeight;
-  return d;
-}
-addMsg("assistant", "Hi! Tell me what you found, and where. Add details like what should have happened. I will write the report.");
+/* Add a normal chat message. */
+function addMsg(role, text) {
+  const element = document.createElement("div");
 
+  element.className = "msg " + (role === "user" ? "u" : "a");
+  element.textContent = text;
+
+  $("chatlog").appendChild(element);
+  $("chatlog").scrollTop = $("chatlog").scrollHeight;
+
+  return element;
+}
+
+addMsg(
+  "assistant",
+  "Hi! Tell me what you found, and where. Add details like what should have happened. I will write the report."
+);
+
+/*
+ * CHAT: ordinary replies appear in the conversation.
+ * Generated reports appear only in chatOut, never as chat bubbles.
+ */
 $("send").onclick = async () => {
   if (busy) return;
-  const t = $("msg").value.trim();
-  if (!t) return;
-  $("msg").value = "";
-  addMsg("user", t);
-  msgs.push({ role:"user", content:t });
 
-  const input = msgs.map((m, i) => i === 0
-    ? { role:"user", content: SYS + "\nIn chat: if key details are missing, ask at most 2 short questions (reply in the user's language). If enough details are present, return the report using the exact section markers.\n\nUser: " + m.content }
-    : m);
+  const message = $("msg").value.trim();
+
+  if (!message) return;
+
+  $("msg").value = "";
+
+  addMsg("user", message);
+  msgs.push({ role: "user", content: message });
+
+  const input = msgs.map((item, index) => {
+    if (index === 0) {
+      return {
+        role: "user",
+        content:
+          SYS +
+          "\nIn chat: if key details are missing, ask at most 2 short questions (reply in the user's language). If enough details are present, return the report using the exact section markers. When returning a report, output ONLY the report markers and report content. Do not add conversational text outside the markers.\n\nUser: " +
+          item.content
+      };
+    }
+
+    return item;
+  });
 
   const bubble = addMsg("assistant", "Thinking…");
-  busy = true; $("send").disabled = true;
+
+  busy = true;
+  $("send").disabled = true;
+
   try {
-    const r = await sample(input, { cache:false });
-    bubble.textContent = r.text;
-    msgs.push({ role:"assistant", content:r.text });
-    if (r.text.includes("[[TITLE]]")) {
-      $("out").style.display = "block";
-      renderReport(r.text);
+    const result = await sample(input, { cache: false });
+    const response = (result.text || "").trim();
+
+    msgs.push({ role: "assistant", content: response });
+
+    if (response.includes("[[TITLE]]")) {
+      /*
+       * Remove the temporary response bubble.
+       * The report goes to the separate Chat report panel.
+       */
+      bubble.remove();
+      renderReport("chat", response);
+    } else {
+      /*
+       * Only normal answers and follow-up questions stay in the chat.
+       */
+      bubble.textContent = response;
     }
-  } catch (e) {
-    bubble.textContent = errText(e);
+  } catch (error) {
+    bubble.textContent = errText(error);
     msgs.pop();
   } finally {
-    busy = false; $("send").disabled = false;
+    busy = false;
+    $("send").disabled = false;
   }
 };
-$("msg").addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("send").click(); }
+
+$("msg").addEventListener("keydown", event => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    $("send").click();
+  }
 });
 </script>
 </body>

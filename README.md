@@ -1,4 +1,4 @@
-::: {align="center"}
+
 # 💜 TrishaQA --- Report Studio
 
 ## ✨ About the Project

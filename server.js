@@ -91,4 +91,12 @@ app.post("/api/generate", async (req, res) => {
   }
 });
 
+const PORT = process.env.PORT || 3000;
+
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
+
 export default app;
